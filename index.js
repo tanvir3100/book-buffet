@@ -30,6 +30,7 @@ async function run() {
 
         const BooksCollections = client.db('bookBuffet').collection('booksCategory');
         const AddedBooks = client.db('bookBuffet').collection('addedBooks');
+        const AddedToCart = client.db('bookBuffet').collection('addedToCart');
 
 
         app.get('/booksCategory', async (req, res) => {
@@ -57,6 +58,12 @@ async function run() {
             const result = await AddedBooks.insertOne(newBooks)
             res.send(result)
         })
+        app.post('/booksCart', async (req, res) => {
+            const bookCart = req.body;
+            console.log(bookCart)
+            const result = await AddedToCart.insertOne(bookCart)
+            res.send(result)
+        })
 
         app.put('/books/:id', async (req, res) => {
             const id = req.params.id;
@@ -65,13 +72,13 @@ async function run() {
             const updateBook = req.body
             const book = {
                 $set: {
-                    image: updateBook.image, 
-                    name: updateBook.name, 
-                    authorName: updateBook.authorName, 
-                    quantityOfBooks: updateBook.quantityOfBooks, 
-                    category: updateBook.category, 
-                    shortDescription: updateBook.shortDescription, 
-                    description: updateBook.description, 
+                    image: updateBook.image,
+                    name: updateBook.name,
+                    authorName: updateBook.authorName,
+                    quantityOfBooks: updateBook.quantityOfBooks,
+                    category: updateBook.category,
+                    shortDescription: updateBook.shortDescription,
+                    description: updateBook.description,
                     rating: updateBook.rating
                 }
             }

@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://BookBuffet349:09HfpE9FqUZWBDdU@cluster0.huqehxg.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -42,15 +42,42 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
+        app.get('/books/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: new ObjectId(id) }
+            const result = await AddedBooks.findOne(query);
+            res.send(result)
+        })
 
 
         app.post('/books', async (req, res) => {
             const newBooks = req.body;
             console.log(newBooks)
-            const result = await BooksCollections.insertOne(newBooks)
+            const result = await AddedBooks.insertOne(newBooks)
             res.send(result)
         })
 
+        app.put('/books/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateBook = req.body
+            const book = {
+                $set: {
+                    image: updateBook.image, 
+                    name: updateBook.name, 
+                    authorName: updateBook.authorName, 
+                    quantityOfBooks: updateBook.quantityOfBooks, 
+                    category: updateBook.category, 
+                    shortDescription: updateBook.shortDescription, 
+                    description: updateBook.description, 
+                    rating: updateBook.rating
+                }
+            }
+            const result = await AddedBooks.updateOne(filter, book, options)
+            res.send(result)
+        })
 
 
 

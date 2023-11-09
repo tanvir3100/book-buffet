@@ -29,6 +29,7 @@ async function run() {
         await client.connect();
 
         const BooksCollections = client.db('bookBuffet').collection('booksCategory');
+        const AddedBooks = client.db('bookBuffet').collection('addedBooks');
 
 
         app.get('/booksCategory', async (req, res) => {
@@ -36,8 +37,19 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
+        app.get('/books', async (req, res) => {
+            const cursor = AddedBooks.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
 
+        app.post('/books', async (req, res) => {
+            const newBooks = req.body;
+            console.log(newBooks)
+            const result = await BooksCollections.insertOne(newBooks)
+            res.send(result)
+        })
 
 
 
